@@ -8,35 +8,66 @@ using System.Net.Sockets;
 
 namespace ArtLib
 {
+    //////////////////
+    // Art-Net packet:
+    // 1-8:     "Art-Net"
+    // 9-10:    OpCode(0x5000 for DMX)
+    // 10-11:   Protocol Version(14)
+    // 12:      Sequence
+    // 13:      Physical
+    // 14-15:   Universe
+    // 16-17:   DMX Data Length (in bytes)
+    // 18...:   DMX Data
+    //////////////////
+    //Class for Receiving Art-Net messages.
     public class Receiver
     {
         private UdpClient Server;
-        public Receiver()
+        private int Port;
+        public Receiver(int Port)
         {
-            this.Server = new UdpClient(16454);
+            this.Port = Port;
+            this.Server = new UdpClient(Port);
         }
 
+        public Receiver()
+        {
+            this.Port = 16454; //Port 16454, because of problems with sending to self.
+            this.Server = new UdpClient(this.Port);
+        }
+
+        //Checks if 'data' is a correct Art-Net package
+        public bool validate(byte[] data)
+        {
+            string artCheck = Encoding.ASCII.GetString(data).Substring(0, 7);
+            int opCode = data[8] * (0x01) + data[9] * (0x100);
+            if (artCheck == "Art-Net" && opCode == 0x5000)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        //Receives raw packets
         public byte[] receiveRaw()
         {
-            IPEndPoint remote = new IPEndPoint(IPAddress.Any, 16454);
+            IPEndPoint remote = new IPEndPoint(IPAddress.Any, this.Port);
             byte[] packet;
             packet = this.Server.Receive(ref remote);
-            string artCheck = Encoding.ASCII.GetString(packet).Substring(0,7);
             return packet;
         }
 
+        //Wrapper for the receiveRaw() function to get and return the data as an ArtNetData object.
         public ArtNetData receiveArtNet()
         {
             byte[] packet;
             while (true)
             {
                 packet = this.receiveRaw();
-                string artCheck = Encoding.ASCII.GetString(packet).Substring(0, 7);
-                int opCode = packet[8] * (0x01) + packet[9] * (0x100);
-                if (artCheck == "Art-Net" && opCode == 0x5000)
-                {
-                    break;
-                }
+
             }
             byte seq = packet[12];
             byte physical = packet[13];

@@ -10,6 +10,7 @@ namespace ArtLib
 {
     public class Transmitter
     {
+        //Transmitter class, poorly written, but works.
         private Pixel[] pixels = new Pixel[150];
         private short selectedUni = 0;
         private UdpClient Client;
@@ -23,6 +24,7 @@ namespace ArtLib
             }
             IPAddress IP = IPAddress.Parse(addr);
             Client = new UdpClient();
+            //This is a remnant of the old Transmitter class. Don't feel like fixing it right now.
             this.remote = new IPEndPoint(IP, port);
             //Client.Connect(IP, port);
 
@@ -36,6 +38,7 @@ namespace ArtLib
 
         public byte[] getHeader(short universe)
         {
+            //Build the Art-Net Header up.
             byte[] Header;
             byte[] ArtStr = ASCIIEncoding.ASCII.GetBytes("Art-Net");
             byte[] Ver = { 0x00, 0x00, 0x50 };

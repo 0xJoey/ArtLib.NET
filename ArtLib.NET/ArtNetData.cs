@@ -8,11 +8,11 @@ namespace ArtLib
 {
     public class ArtNetData
     {
+        //Basically, a class for Art-Net data.
         short universe = 0;
         byte physical = 0;
         byte sequence = 0;
         short length = 0;
-        byte[] rawPacket = new byte[0];
         Pixel[] Pixels;
         public ArtNetData(short universe, byte physical, byte sequence, short len, Pixel[] Pixels, byte[] raw)
         {
@@ -21,7 +21,6 @@ namespace ArtLib
             this.sequence = sequence;
             this.length = len;
             this.Pixels = Pixels;
-            this.rawPacket = raw;
         }
 
         public void setSeq(byte seq)
@@ -47,11 +46,6 @@ namespace ArtLib
         public Pixel[] getPixels()
         {
             return Pixels;
-        }
-
-        public byte[] getRaw()
-        {
-            return rawPacket;
         }
     }
 }

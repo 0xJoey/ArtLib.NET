@@ -8,6 +8,7 @@ namespace ArtLib
 {
     public struct Pixel
     {
+        //Holy shit a Pixel struct.
         public byte R, G, B;
         public Pixel(byte R, byte G, byte B)
         {
